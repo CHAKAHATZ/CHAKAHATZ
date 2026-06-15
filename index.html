@@ -1772,6 +1772,22 @@
     };
 
 
+
+    // ── AUTO-OPEN PRODUCT FROM SHARE LINK ──
+    const slugToProduct = {
+      'escobar': { name:'Escobar', type:'Snapback Hat', price:'75', badge:'new', icon:'🧢', imgKey:'escobar1' },
+    };
+
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.replace('#','').toLowerCase();
+      if (hash && slugToProduct[hash]) {
+        setTimeout(() => {
+          const p = slugToProduct[hash];
+          openModal(p.name, p.type, p.price, p.badge, p.icon, p.imgKey);
+        }, 600);
+      }
+    });
+
     // ── SMOOTH SCROLL FIX ──
     function smoothTo(e, id) {
       e.preventDefault();
@@ -2095,14 +2111,18 @@
 
 
     // ── SHARE PRODUCT ──
+    const productSlugs = { 'Escobar': 'escobar' };
+
     function shareProduct() {
       const name = document.getElementById('modal-name').textContent;
       const price = document.getElementById('modal-price').textContent;
-      const url = window.location.href;
-      const text = `Check out the ${name} (${price}) on CHAKAHATZ!`;
+      const slug = productSlugs[name] || '';
+      const base = window.location.origin + window.location.pathname;
+      const url = base + (slug ? '#' + slug : '');
+      const text = `🧢 ${name} – ${price}\nChaka Hatz Limited Drop 🔥`;
 
       if (navigator.share) {
-        navigator.share({ title: name, text, url })
+        navigator.share({ title: `CHAKAHATZ – ${name}`, text, url })
           .catch(() => fallbackCopy(url));
       } else {
         fallbackCopy(url);
